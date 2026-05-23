@@ -1,48 +1,48 @@
-
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, CheckCircle2, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const WaitlistModal = ({ isOpen, onClose }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      setError('Please enter a valid email address.');
+      setError("Please enter a valid email address.");
       return;
     }
-    
+
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       const formData = new URLSearchParams({
-        'form-name': 'waitlist',
-        email
+        "form-name": "waitlist",
+        "bot-field": "",
+        email,
       });
 
-      const response = await fetch('/', {
-        method: 'POST',
+      const response = await fetch("/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: formData.toString()
+        body: formData.toString(),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to join waitlist');
+        throw new Error("Failed to join waitlist");
       }
-      
+
       setIsSubmitted(true);
     } catch (err) {
-      console.error('Waitlist error:', err);
-      setError(err.message || 'Something went wrong. Please try again.');
+      console.error("Waitlist error:", err);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -53,8 +53,8 @@ const WaitlistModal = ({ isOpen, onClose }) => {
     // Reset state after animation completes
     setTimeout(() => {
       setIsSubmitted(false);
-      setEmail('');
-      setError('');
+      setEmail("");
+      setError("");
       setIsLoading(false);
     }, 300);
   };
@@ -72,7 +72,7 @@ const WaitlistModal = ({ isOpen, onClose }) => {
             className="fixed inset-0 bg-background/80 backdrop-blur-md z-[100]"
             onClick={handleClose}
           />
-          
+
           {/* Modal Container */}
           <div className="fixed inset-0 flex items-center justify-center z-[101] p-4 pointer-events-none">
             <motion.div
@@ -84,7 +84,7 @@ const WaitlistModal = ({ isOpen, onClose }) => {
             >
               {/* Decorative top gradient line */}
               <div className="absolute top-0 left-0 right-0 h-1 gradient-primary" />
-              
+
               <button
                 onClick={handleClose}
                 className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
@@ -98,22 +98,33 @@ const WaitlistModal = ({ isOpen, onClose }) => {
                   <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center mb-6 shadow-lg">
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
-                  
+
                   <h2 className="text-2xl font-bold mb-3 text-balance">
                     Join the Privacy Revolution
                   </h2>
                   <p className="text-muted-foreground mb-8 leading-relaxed">
-                    Be the first to experience zero-compromise messaging. Secure your spot on the waitlist today.
+                    Be the first to experience zero-compromise messaging. Secure
+                    your spot on the waitlist today.
                   </p>
 
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form
+                    name="waitlist"
+                    method="POST"
+                    data-netlify="true"
+                    data-netlify-honeypot="bot-field"
+                    onSubmit={handleSubmit}
+                    className="space-y-4"
+                  >
+                    <input type="hidden" name="form-name" value="waitlist" />
+                    <input type="hidden" name="bot-field" />
                     <div>
                       <input
+                        name="email"
                         type="email"
                         value={email}
                         onChange={(e) => {
                           setEmail(e.target.value);
-                          if (error) setError('');
+                          if (error) setError("");
                         }}
                         disabled={isLoading}
                         placeholder="Enter your email"
@@ -123,16 +134,16 @@ const WaitlistModal = ({ isOpen, onClose }) => {
                         <p className="text-destructive text-sm mt-2">{error}</p>
                       )}
                     </div>
-                    
+
                     <Button
                       type="submit"
                       disabled={isLoading}
                       className="w-full gradient-primary text-white hover:opacity-90 text-base py-6 rounded-xl font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border-0 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isLoading ? 'Securing Spot...' : 'Secure My Spot'}
+                      {isLoading ? "Securing Spot..." : "Secure My Spot"}
                     </Button>
                   </form>
-                  
+
                   <p className="text-xs text-center text-muted-foreground mt-6">
                     We respect your privacy. No spam, ever.
                   </p>
@@ -146,9 +157,12 @@ const WaitlistModal = ({ isOpen, onClose }) => {
                   <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 className="w-8 h-8 text-green-500" />
                   </div>
-                  <h2 className="text-2xl font-bold mb-3">You're on the list!</h2>
+                  <h2 className="text-2xl font-bold mb-3">
+                    You're on the list!
+                  </h2>
                   <p className="text-muted-foreground mb-8">
-                    Keep an eye on your inbox. We'll notify you as soon as GuturGu is ready for you.
+                    Keep an eye on your inbox. We'll notify you as soon as
+                    GuturGu is ready for you.
                   </p>
                   <Button
                     onClick={handleClose}
