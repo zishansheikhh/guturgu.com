@@ -1,8 +1,8 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { motion } from 'framer-motion';
-import Header from '@/components/Header.jsx';
-import Footer from '@/components/Footer.jsx';
+import React from "react";
+import { Helmet } from "react-helmet";
+import { motion } from "framer-motion";
+import Header from "@/components/Header.jsx";
+import Footer from "@/components/Footer.jsx";
 
 const PageTemplate = ({ title, metaDescription, eyebrow, children }) => {
   return (
@@ -29,11 +29,13 @@ const PageTemplate = ({ title, metaDescription, eyebrow, children }) => {
               className="mb-12 text-center"
             >
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
-                <span className="text-sm font-medium tracking-wide text-muted-foreground">{eyebrow}</span>
+                <span className="text-sm font-medium tracking-wide text-muted-foreground">
+                  {eyebrow}
+                </span>
               </div>
               <h1
                 className="text-4xl sm:text-6xl font-extrabold text-balance"
-                style={{ letterSpacing: '-0.02em' }}
+                style={{ letterSpacing: "-0.02em" }}
               >
                 {title}
               </h1>
